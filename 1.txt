@@ -1,0 +1,25 @@
+Smart-Stock-Event-Impact-Analyzer/
+│
+├── app.py                     # Streamlit app (entry point)
+├── requirements.txt           # Dependencies
+├── README.md                  # Project documentation
+│
+├── data/
+│   ├── events/
+│   │   └── market_events.csv  # Manual event data (RBI, Budget, IPO)
+│   │
+│   └── cache/
+│       └── prices_cache.csv   # Optional: cached price data
+│
+├── src/
+│   ├── __init__.py
+│   │
+│   ├── data_loader.py         # yfinance stock & index data
+│   ├── event_analysis.py      # returns, event window, CAR
+│   ├── volatility_analysis.py # rolling volatility logic
+│   ├── sentiment_analysis.py  # NLP sentiment scoring
+│   ├── charts.py              # all matplotlib plots
+│   └── insights.py            # auto-generated insights
+│
+└── assets/
+    └── screenshots/           # README / LinkedIn images
