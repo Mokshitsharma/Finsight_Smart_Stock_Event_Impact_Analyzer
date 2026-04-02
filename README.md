@@ -1,166 +1,209 @@
-# 📈 Smart Stock Event Impact Analyzer
-### 🚀 Overview
+# 📈 FinSight — Smart Stock Event Impact Analyzer
 
-**The Smart Stock Event Impact Analyzer is a data-driven financial analytics application that quantifies how major market events (such as RBI policy decisions, Union Budget announcements, IPO approvals, and earnings) impact stock prices, volatility, and investor sentiment in the Indian equity market.**
+> **A dark, minimal fintech-style dashboard that connects market events with stock behavior — designed from an investor-first perspective.**
 
-The project follows an event-study approach, commonly used in quantitative finance, and presents insights through an interactive Streamlit dashboard.
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-Latest-red?style=flat-square&logo=streamlit)
+![Plotly](https://img.shields.io/badge/Plotly-Dark-636efa?style=flat-square&logo=plotly)
+![NLTK](https://img.shields.io/badge/NLTK-VADER-green?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)
 
-### 🎯 Problem Statement
+---
 
--> Stock prices often react sharply to macroeconomic and corporate events, but:
+## 📌 Problem Statement
 
--> How significant is the reaction?
+Stock prices react sharply to macroeconomic and corporate events — but most retail investors have no systematic way to measure these reactions. Key unanswered questions include:
 
--> Is the impact short-term or persistent?
+- How significant is the price reaction to a specific event (RBI rate cut, Budget, Earnings)?
+- Is the impact short-term or does it persist over days?
+- Does positive news sentiment always translate into positive returns?
+- Which event types cause the highest volatility spikes?
+- How do fundamentals (PE, EPS, ROE) relate to event-driven movements?
 
--> Does positive news sentiment always translate into positive returns?
+Without a structured framework, investors rely on noise and opinions instead of data. FinSight solves this.
 
--> Which events increase market risk (volatility) the most?
+---
 
--> This project aims to systematically measure and visualize these effects.
+## 💡 My Solution
 
-### 🧠 Key Features
+FinSight applies the **event-study methodology** — a standard quantitative finance technique used by institutional analysts — to Indian equity markets, packaged as an interactive Streamlit dashboard.
 
--> 📊 Event-based stock price analysis
+For each of 4 major Nifty large-cap stocks, the system:
+- Fetches live OHLCV price data via yfinance
+- Loads a curated market events dataset (RBI, Budget, IPO, Earnings)
+- Computes event-day returns and volatility spikes around each event window
+- Scores news sentiment using NLTK VADER
+- Generates a fundamental signal (BUY / HOLD / CAUTION) based on PE, EPS, ROE
+- Renders all insights in a premium dark Plotly dashboard with event cards
 
--> 📈 Event-day return & pre/post event comparison
+The result is a clear, data-driven view of how each major market event impacted each stock — with sentiment, impact severity, and price behavior all in one place.
 
--> ⚡ Volatility spike detection
+---
 
--> 🧠 News sentiment analysis (NLP)
+## 📊 Metrics
 
--> 📝 Auto-generated, decision-oriented insights
+| Metric | Description |
+|---|---|
+| **Event-Day Return (%)** | Percentage price change on the event date vs prior close |
+| **Pre-Event Window Return** | Average return in the 5 trading days before the event |
+| **Post-Event Window Return** | Average return in the 5 trading days after the event |
+| **Volatility Spike** | Rolling standard deviation of returns around event window |
+| **Sentiment Score** | VADER compound score (−1 to +1) on event description text |
+| **Impact Classification** | High / Medium / Low based on price move magnitude |
+| **Fundamental Signal** | BUY / HOLD / CAUTION derived from PE, EPS, ROE thresholds |
 
--> 🎛️ Interactive Streamlit dashboard
+---
 
-### 📌 Scope (Version 1)
+## 🛠️ Skills & Tech Stack
 
--> Market Focus: NIFTY-5 large-cap stocks
+| Category | Tools |
+|---|---|
+| Language | Python 3.10+ |
+| Web UI | Streamlit (dark theme, custom CSS) |
+| Visualization | Plotly (dark theme), Matplotlib, Seaborn |
+| Market Data | yfinance (live OHLCV + fundamentals) |
+| NLP / Sentiment | NLTK VADER (event description sentiment scoring) |
+| Statistics | SciPy (return analysis, volatility computation) |
+| Data Processing | Pandas, NumPy |
+| Event Data | Custom CSV (`market_events.csv`) with curated event metadata |
+| Caching | Local CSV cache (`prices_cache.csv`) for faster reruns |
 
--> Reliance Industries
+---
 
--> TCS
+## 📂 Dataset Details
 
--> HDFC Bank
+### Market Price Data
+| Field | Details |
+|---|---|
+| Source | Yahoo Finance via yfinance |
+| Stocks | Reliance (RELIANCE.NS), TCS (TCS.NS), HDFC Bank (HDFCBANK.NS), Infosys (INFY.NS) |
+| Benchmark | NIFTY 50 Index |
+| Frequency | Daily OHLCV |
 
--> Infosys
+### Market Events Dataset (`data/events/market_events.csv`)
+| Field | Details |
+|---|---|
+| Event Types | RBI Monetary Policy, Union Budget, IPO Approval, Quarterly Earnings |
+| Fields | event, date, event_type, impact (High/Medium/Low), sentiment (Bullish/Bearish/Neutral), description |
+| Scope | Curated manually for accuracy and relevance |
 
--> ICICI Bank
+### Fundamentals (Live via yfinance)
+| Metric | Description |
+|---|---|
+| PE Ratio | Price-to-Earnings |
+| EPS | Earnings Per Share |
+| ROE (%) | Return on Equity |
 
--> Benchmark Index: NIFTY 50
+---
 
-### Event Types:
+## 🗂️ Folder Structure
 
--> RBI Monetary Policy
-
--> Union Budget
-
--> IPO Approval
-
--> Quarterly Earnings
-
-### 🏗️ Project Architecture
-Smart-Stock-Event-Impact-Analyzer/
-│
-├── app.py
-├── requirements.txt
+```
+Finsight_Smart_Stock_Event_Impact_Analyzer/
+├── app.py                        # Main Streamlit app (183 lines)
+├── requirements.txt              # Python dependencies
 ├── README.md
 │
 ├── data/
 │   ├── events/
-│   │   └── market_events.csv
+│   │   └── market_events.csv     # Curated market event dataset
 │   └── cache/
-│       └── prices_cache.csv
+│       └── prices_cache.csv      # Local price data cache
 │
-├── src/
-│   ├── data_loader.py
-│   ├── event_analysis.py
-│   ├── volatility_analysis.py
-│   ├── sentiment_analysis.py
-│   ├── charts.py
-│   └── insights.py
-│
-└── assets/
-    └── screenshots/
+└── src/
+    ├── data_loader.py            # yfinance price fetcher + cache handler
+    ├── event_analysis.py         # Event window extraction + matching logic
+    ├── volatility_analysis.py    # Rolling volatility + spike detection
+    ├── sentiment_analysis.py     # NLTK VADER sentiment scorer
+    ├── charts.py                 # Plotly price chart + volatility chart builders
+    ├── fundamentals.py           # PE/EPS/ROE fetcher + BUY/HOLD/CAUTION signal
+    └── insights.py               # Auto-generated insight text per event
+```
 
-### 🔄 Data Flow
+---
 
-User Input (Stock + Event)
-        ↓
-Market Data (yfinance)
-        ↓
-Event Window Extraction
-        ↓
-Returns & Volatility Analysis
-        ↓
-Sentiment Scoring (NLP)
-        ↓
-Visualization + Insights
+## ⚙️ System Architecture
 
-### 🛠️ Tech Stack
+```
+Step 1 → User selects a stock (Reliance / TCS / HDFC Bank / Infosys) via Streamlit radio
+Step 2 → data_loader.py fetches live OHLCV from Yahoo Finance (cached locally as CSV)
+Step 3 → fundamentals.py pulls PE, EPS, ROE → computes BUY / HOLD / CAUTION signal
+Step 4 → charts.py renders Plotly dark-theme price chart + rolling volatility chart
+Step 5 → event_analysis.py loads market_events.csv → filters events relevant to selected stock
+Step 6 → For each event: computes event-day return, pre/post window returns, volatility spike
+Step 7 → sentiment_analysis.py runs NLTK VADER on event description → Bullish/Bearish/Neutral
+Step 8 → insights.py generates auto-text: "Positive market reaction despite negative sentiment"
+Step 9 → Streamlit renders event cards: event name, date, impact badge, sentiment badge, description
+Step 10 → User reads full picture: fundamentals + price trend + volatility + event history
+```
 
--> **Programming Language**: Python
+---
 
--> **Web Framework**: Streamlit
+## 🔍 Why This Tech Stack?
 
--> **Data Analysis**: Pandas, NumPy
+| Choice | Reason |
+|---|---|
+| **Streamlit** | Rapid prototyping of data apps without frontend code; perfect for fintech dashboards |
+| **Plotly (dark theme)** | Interactive, visually premium charts — far superior to Matplotlib for investor-facing UIs |
+| **NLTK VADER** | Rule-based sentiment scorer that works well on short financial text without model training |
+| **yfinance** | Free, reliable access to NSE/BSE stock data and fundamentals |
+| **SciPy** | Statistical functions for return distribution analysis and volatility metrics |
+| **Custom CSV events** | Full control over event quality and relevance — avoids noisy API-based event data |
 
--> **Market Data**: yfinance
+---
 
--> **Visualization**: Matplotlib, Seaborn
+## 🚀 Getting Started
 
--> **Statistics**: SciPy
+### Prerequisites
+- Python 3.10+
+- pip
 
--> **NLP (Sentiment)**: NLTK (VADER)
-
-### ▶️ How to Run Locally
-1️⃣ Clone the repository
-
-git clone https://github.com/your-username/Smart-Stock-Event-Impact-Analyzer.git
-
-cd Smart-Stock-Event-Impact-Analyzer
-
-2️⃣ Install dependencies
+### Installation
+```bash
+git clone https://github.com/Mokshitsharma/Finsight_Smart_Stock_Event_Impact_Analyzer.git
+cd Finsight_Smart_Stock_Event_Impact_Analyzer
 pip install -r requirements.txt
+```
 
-3️⃣ Run the Streamlit app
+### Run
+```bash
 streamlit run app.py
+```
 
-### 🧪 Sample Insights Generated
+Open browser at **http://localhost:8501**
 
-“Positive market reaction despite negative news sentiment.”
+### Usage
+1. Select a stock from the top radio selector
+2. View live fundamentals (PE, EPS, ROE, Signal) in metric cards
+3. Analyze price trend and rolling volatility in the dual Plotly charts
+4. Scroll down to read event cards — each showing date, impact, sentiment, and description
 
-“Significant volatility spike observed post event.”
+---
 
-“Negative immediate market reaction on event day.”
+## 🔮 Future Improvements
 
-These insights help bridge the gap between raw analytics and decision-making.
+1. **Cumulative Abnormal Return (CAR)** — compare stock return vs NIFTY 50 benchmark return around each event window to isolate true event-driven alpha
+2. **Real-time news API** — replace manual CSV events with live NewsAPI / Google News RSS for auto event detection
+3. **Expand stock universe** — cover all 50 Nifty stocks with sector-wise event impact grouping
+4. **Multi-event comparison** — overlay multiple events on a single chart to compare impact magnitudes side-by-side
+5. **Streamlit Cloud deployment** — make the dashboard publicly accessible with a shareable URL
+6. **Statistical significance testing** — t-tests on event-window returns to confirm significance vs random noise
 
-### 📈 Future Enhancements (Planned)
+---
 
-Cumulative Abnormal Return (CAR) vs benchmark
+## ⚠️ Disclaimer
 
-Real-time news API integration
+FinSight is built for **educational and analytical purposes only**. It does not constitute financial or investment advice. Always consult a SEBI-registered financial advisor before making investment decisions.
 
-Sector-wise event impact analysis
+---
 
-Comparative analysis across multiple events
+## 👤 Author
 
-Deployment on Streamlit Cloud
+**Mokshit Sharma**
+B.Tech + M.Tech (Dual Degree) — AI & Data Science | DAVV, Indore
+📧 sharman48520@gmail.com | 🌐 [mokshitsharma27.vercel.app](https://mokshitsharma27.vercel.app)
+🔗 [LinkedIn](https://linkedin.com/in/mokshit-sharma-75b5ab305) | 💻 [GitHub](https://github.com/Mokshitsharma)
 
-### 👤 Author
+---
 
-Mokshit Sharma
-B.Tech + M.Tech (Dual Degree) – AI & Data Science
-📍 DAVV, Indore
-
-### 🔗 GitHub: https://github.com/Mokshitsharma
-
-### 🔗 LinkedIn: https://linkedin.com/in/mokshit-sharma-75b5ab305
-
-### ⚠️ Disclaimer
-
-This project is for educational and analytical purposes only.
-It does not constitute financial or investment advice.
-
-### ⭐ If you like this project, give it a ⭐ on GitHub — it helps a lot!
+⭐ Star this repo if you find it useful!
